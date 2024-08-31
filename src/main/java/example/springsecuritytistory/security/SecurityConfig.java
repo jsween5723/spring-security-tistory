@@ -3,7 +3,6 @@ package example.springsecuritytistory.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import example.springsecuritytistory.common.ExceptionResponse;
 import example.springsecuritytistory.common.Response;
-import example.springsecuritytistory.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -21,7 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 class SecurityConfig {
 
-    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final OAuth2Loader oAuth2Loader;
 
