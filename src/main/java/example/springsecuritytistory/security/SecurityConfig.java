@@ -68,8 +68,8 @@ class SecurityConfig {
             UserEntity userEntity = userRepository.findByUsername(username)
                                                   .orElseThrow(() -> new RuntimeException(
                                                       "로그인 정보가 존재하지 않습니다."));
-            return new UserWithPassword(userEntity.getUsername(), userEntity.getPassword(),
-                userEntity.getRoles());
+            return new UserWithPassword(userEntity.getId(), userEntity.getUsername(),
+                userEntity.getPassword(), userEntity.getRoles());
         };
     }
 

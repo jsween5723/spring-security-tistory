@@ -32,6 +32,10 @@ public class UserEntity extends BaseEntity {
         this.roles.add(new UserRoleEntity(this, USER));
     }
 
+    public UserEntity(Long id) {
+        this.id = id;
+    }
+
     public Set<UserRole> getRoles() {
         return roles.stream().map(UserRoleEntity::getRole).collect(Collectors.toSet());
     }
