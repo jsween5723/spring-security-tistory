@@ -3,7 +3,7 @@ package example.springsecuritytistory.security;
 import java.util.Collection;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public record UserWithPassword(String username, String password, Collection<UserRole> authorities) implements
+public record UserWithPassword(Long id, String username, String password, Collection<UserRole> authorities) implements
     UserDetails {
 
     @Override
