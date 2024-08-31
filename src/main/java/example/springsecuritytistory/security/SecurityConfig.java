@@ -36,7 +36,11 @@ class SecurityConfig {
                                    .failureHandler(this::entryPoint));
         http.oauth2Login(conf -> conf.authorizationEndpoint(end -> end.baseUri("/oauth2/login"))
                                      .userInfoEndpoint(end -> end.userService(oAuth2Loader))
-                                     .loginProcessingUrl("/api/v1/oauth2/login/*"));
+                                     .loginProcessingUrl("/api/v1/oauth2/login/*")
+                                     .successHandler(
+                                         ((request, response, authentication) -> sendResponse(
+                                             response, "로그인 성공")))
+                                     .failureHandler(this::entryPoint));
         http.exceptionHandling(e -> e.authenticationEntryPoint(this::entryPoint)
                                      .accessDeniedHandler(this::accessDeniedHandler));
         http.headers(headers -> headers.frameOptions(FrameOptionsConfig::sameOrigin));
