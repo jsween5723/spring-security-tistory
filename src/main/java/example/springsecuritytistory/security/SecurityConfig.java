@@ -26,6 +26,7 @@ class SecurityConfig {
 
     private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
+    private final OAuth2Loader oAuth2Loader;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +37,9 @@ class SecurityConfig {
                                        ((request, response, authentication) -> sendResponse(
                                            response, "로그인 성공")))
                                    .failureHandler(this::entryPoint));
+        http.oauth2Login(conf -> conf.authorizationEndpoint(end -> end.baseUri("/oauth2/login"))
+                                     .userInfoEndpoint(end -> end.userService(oAuth2Loader))
+                                     .loginProcessingUrl("/api/v1/oauth2/login/*"));
         http.exceptionHandling(e -> e.authenticationEntryPoint(this::entryPoint)
                                      .accessDeniedHandler(this::accessDeniedHandler));
         return http.build();
