@@ -3,7 +3,6 @@ package example.springsecuritytistory.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import example.springsecuritytistory.common.ExceptionResponse;
 import example.springsecuritytistory.common.Response;
-import example.springsecuritytistory.repository.UserEntity;
 import example.springsecuritytistory.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,9 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -66,19 +62,4 @@ class SecurityConfig {
                 .write(bodyString);
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> {
-            UserEntity userEntity = userRepository.findByUsername(username)
-                                                  .orElseThrow(() -> new RuntimeException(
-                                                      "로그인 정보가 존재하지 않습니다."));
-            return new UserWithPassword(userEntity.getId(), userEntity.getUsername(),
-                userEntity.getPassword(), userEntity.getRoles());
-        };
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
