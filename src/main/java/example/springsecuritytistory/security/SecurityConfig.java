@@ -29,12 +29,15 @@ class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors(AbstractHttpConfigurer::disable).csrf(AbstractHttpConfigurer::disable).formLogin(
-                conf -> conf.loginProcessingUrl("/api/v1/auth/login").successHandler(
-                    ((request, response, authentication) -> sendResponse(response, "로그인 성공")))
-                    .failureHandler(this::entryPoint))
-            .exceptionHandling(e -> e.authenticationEntryPoint(this::entryPoint)
-                .accessDeniedHandler(this::accessDeniedHandler));
+        http.cors(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
+        http.formLogin(conf -> conf.loginProcessingUrl("/api/v1/auth/login")
+                                   .successHandler(
+                                       ((request, response, authentication) -> sendResponse(
+                                           response, "로그인 성공")))
+                                   .failureHandler(this::entryPoint));
+        http.exceptionHandling(e -> e.authenticationEntryPoint(this::entryPoint)
+                                     .accessDeniedHandler(this::accessDeniedHandler));
         return http.build();
     }
 
@@ -55,14 +58,16 @@ class SecurityConfig {
         String bodyString = objectMapper.writeValueAsString(body);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(bodyString);
+        response.getWriter()
+                .write(bodyString);
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
             UserEntity userEntity = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("로그인 정보가 존재하지 않습니다."));
+                                                  .orElseThrow(() -> new RuntimeException(
+                                                      "로그인 정보가 존재하지 않습니다."));
             return new UserWithPassword(userEntity.getUsername(), userEntity.getPassword(),
                 userEntity.getRoles());
         };
