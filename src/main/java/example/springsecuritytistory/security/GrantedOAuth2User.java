@@ -14,7 +14,7 @@ public final class GrantedOAuth2User implements OAuth2User {
 
     private final OAuth2Provider providerName;
     private final String providerId;
-    private final Long userId;
+    private Long userId;
     private String username;
     private String name;
     private final Map<String, Object> attributes;
@@ -33,12 +33,15 @@ public final class GrantedOAuth2User implements OAuth2User {
         this.authorities = Set.of(UserRole.USER);
     }
 
-    public JoinUser toJoinUser() {
+    JoinUser toJoinUser() {
         return new JoinUser(username, UUID.randomUUID().toString());
     }
 
-    public UserInformation toInformation() {
+    UserInformation toInformation() {
         return new UserInformation(name);
+    }
+    void assignUserId(long userId) {
+        this.userId = userId;
     }
 
 }
