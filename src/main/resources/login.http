@@ -1,3 +1,12 @@
 ### login
-POST localhost:8080/api/v1/auth/login?username=user&password=6a7454d9-2e2e-49d7-80c5-448f618a22e0
+POST localhost:8080/api/v1/auth/login?username=jsween5723&password=ㅁㄴㅇㅣㅓㄹ외ㅏㅓㅁㄴㅇ로
 content-type: application/x-www-form-urlencoded
+
+### join
+POST localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "username": "jsween5723",
+  "password": "ㅁㄴㅇㅣㅓㄹ외ㅏㅓㅁㄴㅇ로"
+}
