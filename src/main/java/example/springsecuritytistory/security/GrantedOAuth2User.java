@@ -2,6 +2,7 @@ package example.springsecuritytistory.security;
 
 import example.springsecuritytistory.security.KakaoUserInfo.KakaoAccount;
 import example.springsecuritytistory.service.JoinUser;
+import example.springsecuritytistory.service.Provider;
 import example.springsecuritytistory.service.UserInformation;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +11,7 @@ import lombok.Getter;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 @Getter
-public final class GrantedOAuth2User implements OAuth2User {
+public final class GrantedOAuth2User implements OAuth2User, Me {
 
     private final OAuth2Provider providerName;
     private final String providerId;
@@ -44,4 +45,8 @@ public final class GrantedOAuth2User implements OAuth2User {
         this.userId = userId;
     }
 
+    @Override
+    public Provider toProvider() {
+        return new Provider(userId, username, authorities);
+    }
 }
