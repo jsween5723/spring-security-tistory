@@ -37,6 +37,7 @@ class OAuth2Loader implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
             repository.save(new OAuth2UserEntity(oAuthMember, userId));
         }
         userManager.renewInformation(userId, oAuthMember.toInformation());
+        oAuthMember.assignUserId(userId);
         return oAuthMember;
     }
 
