@@ -9,13 +9,11 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -30,6 +28,7 @@ class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(AbstractHttpConfigurer::disable);
         http.csrf(AbstractHttpConfigurer::disable);
+        http.securityContext(conf->conf.securityContextRepository(new MeHttpSessionSecurityContextRepository()));
         http.formLogin(conf -> conf.loginProcessingUrl("/api/v1/auth/login")
                                    .successHandler(this::successHandler)
                                    .failureHandler(this::entryPoint));
@@ -46,13 +45,6 @@ class SecurityConfig {
 
     private void successHandler(HttpServletRequest request, HttpServletResponse response,
         Authentication authentication) throws IOException {
-        Object principal = authentication.getPrincipal();
-        if (principal instanceof Me me) {
-            SecurityContextHolder.getContext()
-                                 .setAuthentication(
-                                     new UsernamePasswordAuthenticationToken(me.toProvider(), null,
-                                         authentication.getAuthorities()));
-        }
         sendResponse(response, "로그인 성공");
     }
 
