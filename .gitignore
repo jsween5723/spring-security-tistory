@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+src/main/resources/tistory
+src/main/resources/tistory.pub

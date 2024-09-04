@@ -24,3 +24,5 @@ spring:
             user-name-attribute: id
   jpa:
     open-in-view: false
+  application:
+    name: tistory-security
