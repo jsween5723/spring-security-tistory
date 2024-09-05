@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.RSAKey.Builder;
 import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,6 +23,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,20 +34,31 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
 @Configuration
 public class JwtBeanGenerator {
+
     @Bean
-    public JwtDecoder jwtDecoder(KeyPair keyPair) {
-        return NimbusJwtDecoder.withPublicKey((RSAPublicKey) keyPair.getPublic())
+    public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
+        return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey())
                                .build();
     }
 
     @Bean
-    public JwtEncoder jwtEncoder(KeyPair keyPair) {
-        RSAKey key = new Builder((RSAPublicKey) keyPair.getPublic()).privateKey(
-                                                                        (RSAPrivateKey) keyPair.getPrivate())
-                                                                    .keyID("bean")
-                                                                    .build();
-        ImmutableJWKSet<SecurityContext> jwkSet = new ImmutableJWKSet<>(new JWKSet(key));
-        return new NimbusJwtEncoder(jwkSet);
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        return new NimbusJwtEncoder(jwkSource);
+    }
+
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey) {
+        return new ImmutableJWKSet<>(new JWKSet(rsaKey));
+    }
+
+    @Bean
+    public RSAKey rsaKey(KeyPair keyPair) {
+        return new Builder((RSAPublicKey) keyPair.getPublic()).privateKey(
+                                                                  (RSAPrivateKey) keyPair.getPrivate())
+                                                              .keyID(UUID.randomUUID()
+                                                                         .toString())
+                                                              .build();
     }
 
     @Bean
